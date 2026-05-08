@@ -53,6 +53,7 @@
       gap: 12px;
       align-items: center;
       justify-content: center;
+      direction: ltr;
     }
     .cd-unit {
       display: flex;
@@ -151,7 +152,8 @@
       gap: 10px;
     }
     .slot-btn {
-      padding: 10px 22px;
+      padding: 12px 22px;
+      min-height: 48px;
       border: 2px solid #0891B2;
       border-radius: 8px;
       background: #fff;
@@ -161,6 +163,7 @@
       font-weight: 700;
       cursor: pointer;
       transition: all 0.18s;
+      touch-action: manipulation;
     }
     .slot-btn:hover {
       background: #E0F2FE;
@@ -182,7 +185,8 @@
     .submit-btn {
       margin-top: 28px;
       width: 100%;
-      padding: 14px;
+      padding: 16px;
+      min-height: 52px;
       background: #0891B2;
       color: #fff;
       border: none;
@@ -192,6 +196,8 @@
       font-weight: 800;
       cursor: pointer;
       transition: background 0.2s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     .submit-btn:hover:not(:disabled) {
       background: #0e7490;
@@ -252,10 +258,31 @@
       font-size: 1.1rem;
     }
 
-    @media (max-width: 480px) {
-      .cd-num { width: 70px; height: 70px; font-size: 2.2rem; border-radius: 10px; }
-      .page-header h1 { font-size: 1.5rem; }
-      .form-card { padding: 24px 18px; }
+    @media (max-width: 520px) {
+      .page-header { padding: 20px 16px 16px; }
+      .page-header h1 { font-size: 1.4rem; }
+      .page-header p { font-size: 0.95rem; }
+
+      #countdown-section { padding: 40px 16px; }
+      .cd-num { width: 68px; height: 68px; font-size: 2rem; border-radius: 8px; }
+      .cd-sep { font-size: 2rem; }
+      .cd-label { font-size: 0.78rem; }
+      .open-date-note { font-size: 0.85rem; }
+
+      #form-section { margin: 24px auto; }
+      .form-card { padding: 20px 14px; border-radius: 12px; }
+
+      .slots-grid { display: grid; grid-template-columns: 1fr 1fr; }
+      .slot-btn { width: 100%; text-align: center; }
+
+      #success-section { margin: 40px auto; }
+      .success-card { padding: 32px 20px; }
+      .success-card h2 { font-size: 1.5rem; }
+    }
+
+    @media (max-width: 360px) {
+      .cd-num { width: 58px; height: 58px; font-size: 1.7rem; }
+      .cd-sep { font-size: 1.6rem; }
     }
   </style>
 </head>

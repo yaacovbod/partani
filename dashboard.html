@@ -44,7 +44,8 @@
       border-radius: 20px;
     }
     .refresh-btn {
-      padding: 8px 20px;
+      padding: 10px 20px;
+      min-height: 44px;
       background: #0891B2;
       color: #fff;
       border: none;
@@ -53,6 +54,8 @@
       font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     .refresh-btn:hover { background: #0e7490; }
 
@@ -168,9 +171,18 @@
       margin-top: 12px;
     }
 
-    @media (max-width: 480px) {
-      .page-header { flex-direction: column; align-items: flex-start; }
-      .slots-grid { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 600px) {
+      .page-header { padding: 16px; flex-direction: column; align-items: flex-start; }
+      .page-header h1 { font-size: 1.2rem; }
+      .main { padding: 20px 12px 40px; }
+      .slots-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .slot-card { padding: 14px 12px; }
+      .slot-time { font-size: 1.2rem; }
+      .day-heading { font-size: 1rem; }
+    }
+
+    @media (max-width: 360px) {
+      .slots-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
