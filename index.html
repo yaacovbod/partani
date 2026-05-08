@@ -354,6 +354,7 @@
       </div>
     </div>
 
+    <div id="debug-info" style="font-size:0.75rem;color:#aaa;margin-top:12px;word-break:break-all;"></div>
     <div id="form-error" class="error-msg" style="display:none"></div>
     <button class="submit-btn" id="submit-btn" disabled onclick="submitForm()">שמור מקום</button>
   </div>
@@ -451,6 +452,10 @@
     var headers = data[0];
     var dayIdx  = headers.indexOf('יום');
     var timeIdx = headers.indexOf('שעה');
+
+    document.getElementById('debug-info').textContent =
+      'שורות: ' + data.length + ' | dayIdx: ' + dayIdx + ' | timeIdx: ' + timeIdx +
+      ' | headers: ' + JSON.stringify(headers);
 
     if (dayIdx === -1 || timeIdx === -1) { renderSlots(); return; }
 
