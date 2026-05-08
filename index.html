@@ -465,6 +465,11 @@
         slotCounts[key] = (slotCounts[key] || 0) + 1;
       }
     });
+
+    document.getElementById('debug-info').textContent +=
+      ' | slotCounts: ' + JSON.stringify(slotCounts) +
+      ' | row1: ' + JSON.stringify(data[1]);
+
     renderSlots();
   }
 
