@@ -446,10 +446,17 @@
 
   function processSlots(data) {
     slotCounts = {};
-    var rows = data.slice(1);
-    rows.forEach(function(row) {
-      if (row[3] && row[4]) {
-        var key = row[3] + '-' + row[4];
+    if (!data || data.length < 1) { renderSlots(); return; }
+
+    var headers = data[0];
+    var dayIdx  = headers.indexOf('יום');
+    var timeIdx = headers.indexOf('שעה');
+
+    if (dayIdx === -1 || timeIdx === -1) { renderSlots(); return; }
+
+    data.slice(1).forEach(function(row) {
+      if (row[dayIdx] && row[timeIdx]) {
+        var key = row[dayIdx] + '-' + row[timeIdx];
         slotCounts[key] = (slotCounts[key] || 0) + 1;
       }
     });
