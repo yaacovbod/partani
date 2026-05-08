@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דשבורד — פרטני היסטוריה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: #F9FAFB;
+      color: #111;
+      direction: rtl;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      background: #fff;
+      border-bottom: 3px solid #0891B2;
+      padding: 28px 32px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .total-badge {
+      background: #E0F2FE;
+      color: #0891B2;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+    .refresh-btn {
+      padding: 8px 20px;
+      background: #0891B2;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .refresh-btn:hover { background: #0e7490; }
+
+    .main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 36px 16px 64px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: #888;
+      font-size: 1rem;
+    }
+
+    .day-section {
+      margin-bottom: 36px;
+    }
+    .day-heading {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #0891B2;
+      padding: 0 0 12px;
+      border-bottom: 2px solid #E0F2FE;
+      margin-bottom: 16px;
+    }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .slot-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+      border: 2px solid #E0F2FE;
+    }
+    .slot-card.full {
+      border-color: #FEE2E2;
+      background: #FFF5F5;
+    }
+    .slot-time {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 8px;
+    }
+    .slot-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .count-bar {
+      flex: 1;
+      height: 6px;
+      background: #E0F2FE;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .count-fill {
+      height: 100%;
+      background: #0891B2;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+    .slot-card.full .count-fill {
+      background: #F87171;
+    }
+    .count-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0891B2;
+      white-space: nowrap;
+    }
+    .slot-card.full .count-label {
+      color: #F87171;
+    }
+    .slot-card.full .slot-status {
+      font-size: 0.8rem;
+      color: #F87171;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .student-list {
+      list-style: none;
+      padding: 0;
+    }
+    .student-list li {
+      font-size: 0.9rem;
+      color: #333;
+      padding: 4px 0;
+      border-bottom: 1px solid #F3F4F6;
+    }
+    .student-list li:last-child { border-bottom: none; }
+    .student-list li::before {
+      content: '• ';
+      color: #0891B2;
+    }
+    .empty-slot {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    .updated-note {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .page-header { flex-direction: column; align-items: flex-start; }
+      .slots-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>דשבורד פרטני — היסטוריה</h1>
+  <div class="header-meta">
+    <span class="total-badge" id="total-badge">נרשמו: 0</span>
+    <button class="refresh-btn" onclick="loadData()">רענן</button>
+  </div>
+</div>
+
+<div class="main">
+  <div id="loading" class="loading">טוען נתונים...</div>
+  <div id="content" style="display:none"></div>
+  <div class="updated-note" id="updated-note"></div>
+</div>
+
+<script>
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFDlBHn07-bzcBGhok5pVsrFsQcvwspYEf8DF8toXFzog-qhkerIbNc361-Xij3W2VAg/exec';
+  var MAX_PER_SLOT = 3;
+
+  var DAYS = [
+    {
+      key: 'ראשון',
+      label: 'יום ראשון — 10 במאי 2026',
+      times: ['09:10','10:00','10:40','11:40']
+    },
+    {
+      key: 'שני',
+      label: 'יום שני — 11 במאי 2026',
+      times: ['09:10','10:00','10:40','11:40']
+    }
+  ];
+
+  function loadData() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('content').style.display = 'none';
+
+    var cbName = 'dashCb_' + Date.now();
+    var script = document.createElement('script');
+    script.src = APPS_SCRIPT_URL + '?sheetName=' + encodeURIComponent('פרטני') + '&callback=' + cbName;
+    script.onerror = function() {
+      document.getElementById('loading').textContent = 'שגיאה בטעינה.';
+      document.body.removeChild(script);
+    };
+    window[cbName] = function(data) {
+      document.body.removeChild(script);
+      delete window[cbName];
+      render(data);
+    };
+    document.body.appendChild(script);
+  }
+
+  function render(data) {
+    var rows = data.slice(1).filter(function(r) { return r[3] && r[4]; });
+
+    var slotMap = {};
+    rows.forEach(function(row) {
+      var day  = row[3];
+      var time = row[4];
+      var key  = day + '-' + time;
+      if (!slotMap[key]) slotMap[key] = [];
+      slotMap[key].push({ first: row[1], last: row[2], ts: row[0] });
+    });
+
+    var totalCount = rows.length;
+    document.getElementById('total-badge').textContent = 'נרשמו: ' + totalCount;
+
+    var html = '';
+    DAYS.forEach(function(day) {
+      html += '<div class="day-section">';
+      html += '<div class="day-heading">' + day.label + '</div>';
+      html += '<div class="slots-grid">';
+
+      day.times.forEach(function(time) {
+        var key = day.key + '-' + time;
+        var students = slotMap[key] || [];
+        var count = students.length;
+        var isFull = count >= MAX_PER_SLOT;
+        var pct = Math.min(100, Math.round(count / MAX_PER_SLOT * 100));
+
+        html += '<div class="slot-card' + (isFull ? ' full' : '') + '">';
+        html += '<div class="slot-time">' + time + '</div>';
+        html += '<div class="slot-count">';
+        html += '<div class="count-bar"><div class="count-fill" style="width:' + pct + '%"></div></div>';
+        html += '<span class="count-label">' + count + '/' + MAX_PER_SLOT + '</span>';
+        html += '</div>';
+        if (isFull) html += '<div class="slot-status">מלא</div>';
+
+        if (students.length > 0) {
+          html += '<ul class="student-list">';
+          students.forEach(function(s) {
+            html += '<li>' + escHtml(s.first) + ' ' + escHtml(s.last) + '</li>';
+          });
+          html += '</ul>';
+        } else {
+          html += '<div class="empty-slot">אין נרשמים עדיין</div>';
+        }
+
+        html += '</div>';
+      });
+
+      html += '</div></div>';
+    });
+
+    document.getElementById('content').innerHTML = html;
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('updated-note').textContent = 'עודכן: ' + new Date().toLocaleTimeString('he-IL');
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  loadData();
+  setInterval(loadData, 60000);
+</script>
+</body>
+</html>
