@@ -268,6 +268,21 @@
       font-size: 1.1rem;
     }
 
+    /* ===== FLOATING EMOJIS ===== */
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(0deg);   opacity: 0; }
+      5%   { opacity: 0.45; }
+      90%  { opacity: 0.35; }
+      100% { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
+    }
+    #float-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
     @media (max-width: 520px) {
       .page-header { padding: 20px 16px 16px; }
       .page-header h1 { font-size: 1.4rem; }
@@ -297,6 +312,8 @@
   </style>
 </head>
 <body>
+
+<div id="float-container"></div>
 
 <div class="page-header">
   <h1>רישום לשיעור פרטני</h1>
@@ -371,6 +388,26 @@
 </div>
 
 <iframe name="submit-target" style="display:none"></iframe>
+
+<script>
+  (function() {
+    var EMOJIS = ['📜','⚔️','🏰','👑','🗺️','🏛️','⚱️','🗿','🧭','📖','⚖️','🌍','🏺','🎖️','🕌','✡️','📜','⚔️','🏰','👑','🗺️','🏛️','⚱️','🗿'];
+    var container = document.getElementById('float-container');
+    EMOJIS.forEach(function(emoji, i) {
+      var el = document.createElement('span');
+      var size = 1.4 + (i % 3) * 0.2;
+      var left = 2 + (i * 96 / EMOJIS.length) + (Math.random() * 3 - 1.5);
+      var duration = 12 + Math.random() * 14;
+      var delay = -(Math.random() * duration);
+      el.textContent = emoji;
+      el.style.cssText = 'position:absolute;bottom:-80px;opacity:0;user-select:none;pointer-events:none;' +
+        'font-size:' + size.toFixed(1) + 'rem;' +
+        'left:' + left.toFixed(1) + '%;' +
+        'animation:floatUp ' + duration.toFixed(1) + 's ' + delay.toFixed(1) + 's linear infinite;';
+      container.appendChild(el);
+    });
+  })();
+</script>
 
 <script>
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFDlBHn07-bzcBGhok5pVsrFsQcvwspYEf8DF8toXFzog-qhkerIbNc361-Xij3W2VAg/exec';
