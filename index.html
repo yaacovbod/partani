@@ -354,7 +354,6 @@
       </div>
     </div>
 
-    <div id="debug-info" style="font-size:0.75rem;color:#aaa;margin-top:12px;word-break:break-all;"></div>
     <div id="form-error" class="error-msg" style="display:none"></div>
     <button class="submit-btn" id="submit-btn" disabled onclick="submitForm()">שמור מקום</button>
   </div>
@@ -375,7 +374,7 @@
 
 <script>
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFDlBHn07-bzcBGhok5pVsrFsQcvwspYEf8DF8toXFzog-qhkerIbNc361-Xij3W2VAg/exec';
-  var OPEN_TIME = new Date('2020-01-01T00:00:00Z'); // TEST MODE
+  var OPEN_TIME = new Date('2026-05-09T18:00:00Z'); // 21:00 IDT
   var MAX_PER_SLOT = 3;
 
   var SLOTS = {
@@ -453,10 +452,6 @@
     var dayIdx  = headers.indexOf('יום');
     var timeIdx = headers.indexOf('שעה');
 
-    document.getElementById('debug-info').textContent =
-      'שורות: ' + data.length + ' | dayIdx: ' + dayIdx + ' | timeIdx: ' + timeIdx +
-      ' | headers: ' + JSON.stringify(headers);
-
     if (dayIdx === -1 || timeIdx === -1) { renderSlots(); return; }
 
     data.slice(1).forEach(function(row) {
@@ -465,10 +460,6 @@
         slotCounts[key] = (slotCounts[key] || 0) + 1;
       }
     });
-
-    document.getElementById('debug-info').textContent +=
-      ' | slotCounts: ' + JSON.stringify(slotCounts) +
-      ' | row1: ' + JSON.stringify(data[1]);
 
     renderSlots();
   }
