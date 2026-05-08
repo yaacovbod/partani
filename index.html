@@ -175,6 +175,16 @@
     .slot-btn.full {
       display: none;
     }
+    .slot-remaining {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+    .slot-btn.selected .slot-remaining {
+      opacity: 0.9;
+    }
 
     .no-slots-msg {
       color: #e53e3e;
@@ -467,9 +477,10 @@
       var count = slotCounts[key] || 0;
       var isFull = count >= MAX_PER_SLOT;
 
+      var remaining = MAX_PER_SLOT - count;
       var btn = document.createElement('button');
       btn.className = 'slot-btn' + (isFull ? ' full' : '') + (selectedSlot && selectedSlot.key === key ? ' selected' : '');
-      btn.textContent = slot.time;
+      btn.innerHTML = slot.time + '<span class="slot-remaining">' + remaining + ' פנויים</span>';
       btn.dataset.day  = slot.day;
       btn.dataset.time = slot.time;
       btn.dataset.key  = key;
